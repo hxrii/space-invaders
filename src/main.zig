@@ -1,5 +1,21 @@
 const rl = @import("raylib");
 
+const Rectangle = struct {
+    x: f32,
+    y: f32,
+    width: f32,
+    height: f32,
+
+    pub fn intersects(self: Rectangle, other: Rectangle) bool {
+        return self.x < other.x + self.width and
+            self.x + self.width > other.x and
+            self.y < other.y + other.height and
+            self.y + self.height > other.y;
+    }
+};
+
+const gameConfig = struct { screenWidth: i32, screenHeight: i32, playerWidth: i32, playerHeight: i32, playerStartY: i32, bulletWidth: f32, bulletHeight: f32, shieldStartX: f32, shieldY: f32, shieldWidth: f32, shieldHeight: f32, shieldSpacing: f32, invaderStartX: f32, invaderStartY: f32, invaderHeightX: f32, invaderHeightY: f32, InvaderSpacingX: f32, InvaderSpacingY: f32 };
+
 pub fn main() void {
     const screen_width = 800;
     const screen_height = 600;
