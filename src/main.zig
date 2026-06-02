@@ -54,6 +54,24 @@ const Player = struct {
         if (rl.isKeyDown(rl.KeyboardKey.left)) {
             self.position_x -= self.speed;
         }
+
+        if (self.position_x <= 0) {
+            self.position_x = 0;
+        }
+
+        if (self.position_x + self.width > @as(f32, @floatFromInt(rl.getScreenWidth()))) {
+            self.position_x = @as(f32, @floatFromInt(rl.getScreenWidth())) - self.width;
+        }
+    }
+
+    pub fn getRect(self: @This()) Rectangle {
+        return .{
+            .x = self.position_x,
+            .y = self.position_y,
+            .width = self.width,
+            .height = self.height,
+            .speed = self.speed,
+        };
     }
 
     pub fn draw(self: @This()) void {
@@ -93,6 +111,7 @@ pub fn main() void {
         rl.clearBackground(rl.Color.black);
 
         player.update();
+        player.draw();
         rl.drawText("Zig Invaders", 300, 250, 40, rl.Color.green);
     }
 
