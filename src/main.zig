@@ -127,7 +127,7 @@ const Invader = struct {
             .position_y = position_y,
             .width = width,
             .height = height,
-            .speed = 2.0,
+            .speed = 100.0,
             .alive = true,
         };
     }
@@ -142,6 +142,11 @@ const Invader = struct {
                 rl.Color.green,
             );
         }
+    }
+
+    pub fn update(self: *@This(), dx: f32, dy: f32) void {
+        self.position_x += dx;
+        self.position_y += dy;
     }
 };
 
@@ -161,6 +166,11 @@ pub fn main() void {
     const invader_startY = 50.0;
     const invader_spacingX = 60.0;
     const invader_spacingY = 40.0;
+    const invader_speed = 1.0;
+    const invader_move_delay = 30;
+
+    var invader_direction: f32 = 1.0;
+    var move_timer: i32 = 0;
 
     rl.initWindow(screen_width, screen_height, "Zig Invaders");
 
@@ -205,6 +215,34 @@ pub fn main() void {
                     bullet.position_y = player.position_y;
                     bullet.active = true;
                     break;
+                }
+            }
+        }
+
+        move_timer += 1;
+        if (move_timer >= invader_move_delay) {
+            move_timer = 0;
+            var hit_edge = false;
+
+            for (&invaders) |*rows| {
+                for (rows) |*invader| {
+                    if (invader.alive) {
+                        const next_x = invader.position_x + (invader_speed) * invader_direction;
+                        if (next_x < 0 or next_x + invader_width > @as(f32, @floatFromInt(screen_width))) {
+                            hit_edge = true;
+                            break;
+                        }
+                    }
+                }
+                if (hit_edge) break;
+            }
+            if (hit_edge) {
+                invader_direction *= -1.0;
+            } else {
+                for (&invaders) |*rows| {
+                    for (rows) |*invader| {
+                        invader.update(invader_speed * invader_direction * 20, 0);
+                    }
                 }
             }
         }
