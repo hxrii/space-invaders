@@ -168,6 +168,7 @@ pub fn main() void {
     const invader_spacingY = 40.0;
     const invader_speed = 1.0;
     const invader_move_delay = 30;
+    const invader_drop_distance = 20.0;
 
     var invader_direction: f32 = 1.0;
     var move_timer: i32 = 0;
@@ -236,8 +237,14 @@ pub fn main() void {
                 }
                 if (hit_edge) break;
             }
+
             if (hit_edge) {
                 invader_direction *= -1.0;
+                for (&invaders) |*row| {
+                    for (row) |*invader| {
+                        invader.update(invader_speed * invader_direction * 20, invader_drop_distance);
+                    }
+                }
             } else {
                 for (&invaders) |*rows| {
                     for (rows) |*invader| {
